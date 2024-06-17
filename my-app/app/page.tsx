@@ -1,35 +1,45 @@
 "use client";
-import Image from "next/image";
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 export default function Home() {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [nationality, setNationality] = useState("");
+  const [probability, setProbability] = useState();
+  const [allUsersToSerched, setAllUsersToSerched] = useState([]);
+
+  useEffect(() => {
+    getAllUser();
+  }, []);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    // בקשה ל-genderize.io
-    const genderResponse = await fetch(`https://api.genderize.io?name=${name}`);
-    const genderData = await genderResponse.json();
-
-    // בקשה ל-nationalize.io
-    const nationalityResponse = await fetch(
-      `https://api.nationalize.io?name=${name}`
-    );
-    const nationalityData = await nationalityResponse.json();
-
-    // עדכון המצב עם הנתונים שהתקבלו
-    setGender(genderData.gender);
-    setNationality(
-      nationalityData.country
-        .map((country: any) => country.country_id)
-        .join(", ")
-    );
+    try {
+      const ResPromis = await axios.post("/api/server/usersAction", {
+        name: name,
+      });
+      setGender(ResPromis.data.SavedUser.gender);
+      setNationality(ResPromis.data.SavedUser.nationality);
+      setProbability(ResPromis.data.SavedUser.probability);
+    } catch (error) {
+      console.log("error : ", error);
+    }
   };
+
+  const getAllUser = async () => {
+    try {
+      const users = await axios.get("/api/server/usersAction");
+      setAllUsersToSerched(users.data.AllUsers);
+    } catch (error) {
+      console.log("Error : ", error);
+    }
+  };
+  console.log(allUsersToSerched);
+  
   return (
-    <div className="bg-slate-200 flex flex-col justify-evenly items-center  w-full h-[100vh] text-black">
+    <div className="bg-slate-200 flex flex-col md:flex-row justify-evenly items-center  w-full h-[100vh] text-black">
       <form
         onSubmit={handleSubmit}
         className=" w-96 h-96  flex flex-col justify-evenly items-center bg-gray-50 rounded-md shadow-2xl"
@@ -44,11 +54,18 @@ export default function Home() {
           />
           <p>Gender : {gender && <> {gender}</>}</p>
           <p> Nationality : {nationality && <> {nationality}</>}</p>
+          <p> probability : {probability && <> {probability}</>}</p>
         </label>
         <button type="submit" className="bg-yellow-200 w-[50%]  rounded-md">
           Predict
         </button>
       </form>
+      
+      <div className=" w-96 h-96  flex flex-col justify-evenly items-center bg-gray-50 rounded-md shadow-2xl">
+        {allUsersToSerched.map((user,index) => 
+          <p key={index}>{user}</p>
+        )}
+      </div>
     </div>
   );
 }
