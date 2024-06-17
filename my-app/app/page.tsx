@@ -8,8 +8,16 @@ export default function Home() {
   const [nationality, setNationality] = useState("");
   const [probability, setProbability] = useState();
   const [allUsersToSerched, setAllUsersToSerched] = useState([]);
-
+  const [filterUser, setFilterUser] = useState("");
   useEffect(() => {
+    const getAllUser = async () => {
+      try {
+        const users = await axios.get("/api/server/usersAction");
+        setAllUsersToSerched(users.data.AllUsers);
+      } catch (error) {
+        console.log("Error : ", error);
+      }
+    };
     getAllUser();
   }, []);
 
@@ -28,18 +36,8 @@ export default function Home() {
     }
   };
 
-  const getAllUser = async () => {
-    try {
-      const users = await axios.get("/api/server/usersAction");
-      setAllUsersToSerched(users.data.AllUsers);
-    } catch (error) {
-      console.log("Error : ", error);
-    }
-  };
-  console.log(allUsersToSerched);
-  
   return (
-    <div className="bg-slate-200 flex flex-col md:flex-row justify-evenly items-center  w-full h-[100vh] text-black">
+    <div className="bg-slate-200 flex flex-col xl:flex-row justify-evenly items-center  w-full h-[100vh] text-black">
       <form
         onSubmit={handleSubmit}
         className=" w-96 h-96  flex flex-col justify-evenly items-center bg-gray-50 rounded-md shadow-2xl"
@@ -60,11 +58,34 @@ export default function Home() {
           Predict
         </button>
       </form>
-      
-      <div className=" w-96 h-96  flex flex-col justify-evenly items-center bg-gray-50 rounded-md shadow-2xl">
-        {allUsersToSerched.map((user,index) => 
-          <p key={index}>{user}</p>
-        )}
+
+      <div className=" w-[50%] h-96 p-3  flex flex-col justify-between items-center bg-gray-50 rounded-md shadow-2xl">
+        <div>
+          <input
+            type="text"
+            className="bg-slate-300 rounded-md"
+            placeholder="Serche..."
+            onChange={(e: any) => setFilterUser(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col justify-evenly h-96 w-full bg-slate-400">
+          {allUsersToSerched
+            .filter((item: any) => {
+              return filterUser.toLowerCase() === ""
+                ? item
+                : item.name.toLowerCase().includes(filterUser);
+            })
+            .map((user: any) => (
+              <div
+                key={user._id}
+                className="flex justify-around border border-blak p-1 rounded-lg bg-slate-200"
+              >
+                <p>name : {user.name}</p>,<p>gender : {user.gender}</p>,
+                <p>nationality : {user.nationality}</p>,
+                <p>probability : {user.probability}</p>
+              </div>
+            ))}
+        </div>
       </div>
     </div>
   );
