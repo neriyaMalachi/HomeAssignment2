@@ -9,10 +9,14 @@ export async function POST(request: NextRequest) {
     `https://api.genderize.io?name=${UserName.name}`
   );
   const genderData = await genderResponse.json();
+  console.log("gender: ",genderData);
+  
   const nationalityResponse = await fetch(
     `https://api.nationalize.io?name=${UserName.name}`
   );
   const nationalityData = await nationalityResponse.json();
+  console.log("nation",nationalityData);
+
   const country = nationalityData.country
     .map((c: any) => c.country_id)
     .join(",");

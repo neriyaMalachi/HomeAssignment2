@@ -49,9 +49,10 @@ export default function Home() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="text-black border border-black rounded-md"
+            placeholder="name..."
           />
-          <p>Gender : {gender && <> {gender}</>}</p>
           <p> Nationality : {nationality && <> {nationality}</>}</p>
+          <p>Gender : {gender && <> {gender}</>}</p>
           <p> probability : {probability && <> {probability}</>}</p>
         </label>
         <button type="submit" className="bg-yellow-200 w-[50%]  rounded-md">
@@ -59,7 +60,7 @@ export default function Home() {
         </button>
       </form>
 
-      <div className=" w-[50%] h-96 p-3  flex flex-col justify-between items-center bg-gray-50 rounded-md shadow-2xl">
+      <div className=" w-[50%] h-80 p-3  flex flex-col justify-between items-center  rounded-md shadow-2xl">
         <div>
           <input
             type="text"
@@ -68,7 +69,7 @@ export default function Home() {
             onChange={(e: any) => setFilterUser(e.target.value)}
           />
         </div>
-        <div className="flex flex-col justify-evenly h-96 w-full bg-slate-400">
+        <div className="flex flex-col  h-96 w-full overflow-auto">
           {allUsersToSerched
             .filter((item: any) => {
               return filterUser.toLowerCase() === ""
@@ -78,7 +79,7 @@ export default function Home() {
             .map((user: any) => (
               <div
                 key={user._id}
-                className="flex justify-around border border-blak p-1 rounded-lg bg-slate-200"
+                className="flex justify-around border border-blak p-1 rounded-lg  shadow-lg"
               >
                 <p>name : {user.name}</p>,<p>gender : {user.gender}</p>,
                 <p>nationality : {user.nationality}</p>,
