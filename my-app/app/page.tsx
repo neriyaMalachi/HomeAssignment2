@@ -3,12 +3,15 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 export default function Home() {
+  // Varibles
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [nationality, setNationality] = useState("");
   const [probability, setProbability] = useState();
   const [allUsersToSerched, setAllUsersToSerched] = useState([]);
   const [filterUser, setFilterUser] = useState("");
+
+  // Returns all the names checked in the software
   useEffect(() => {
     const getAllUser = async () => {
       try {
@@ -20,7 +23,7 @@ export default function Home() {
     };
     getAllUser();
   }, []);
-
+  // Returns the result according to the entered name
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
