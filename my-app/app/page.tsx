@@ -22,8 +22,9 @@ export default function Home() {
       }
     };
     getAllUser();
-  }, []);
+  }, [gender]);
   // Returns the result according to the entered name
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
